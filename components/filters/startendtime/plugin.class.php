@@ -52,46 +52,49 @@ class plugin_startendtime extends plugin_base {
             $filterendtime = optional_param_array('filter_endtime', 0, PARAM_RAW);
         }
 
-        if (!$filterstarttime || !$filterendtime) {
-            return $finalelements;
-        }
-
-        $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day'],
-            $filterstarttime['hour'], $filterstarttime['minute']);
-        $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day'],
-            $filterendtime['hour'], $filterendtime['minute']);
+       // if (!$filterstarttime || !$filterendtime) {
+           // return $finalelements;
+        //}
 
         $operators = array('<', '>', '<=', '>=');
+        if($filterstarttime !=0){
 
-        if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
-            if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+            $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day'],
+            $filterstarttime['hour'], $filterstarttime['minute']);
+
+            if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
+                list($field, $operator) = preg_split('/:/', $output[1]);
+                if (!in_array($operator, $operators)) {
+                    print_error('nosuchoperator');
+                }
+                $replace = ' AND '.$field.' '.$operator.' '.$filterstarttime;
+                $finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%', $replace, $finalelements);
             }
-            $replace = ' AND '.$field.' '.$operator.' '.$filterstarttime;
-            $finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%', $replace, $finalelements);
+            $finalelements = str_replace('%%STARTTIME%%', $filterstarttime, $finalelements);
         }
 
-        if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
-            if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
+        if($filterendtime !=0){
+            $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day'],
+            $filterendtime['hour'], $filterendtime['minute']);
+
+            if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
+                list($field, $operator) = preg_split('/:/', $output[1]);
+                if (!in_array($operator, $operators)) {
+                    print_error('nosuchoperator');
+                }
+                $replace = ' AND '.$field.' '.$operator.' '.$filterendtime;
+                $finalelements = str_replace('%%FILTER_ENDTIME:'.$output[1].'%%', $replace, $finalelements);
             }
-            $replace = ' AND '.$field.' '.$operator.' '.$filterendtime;
-            $finalelements = str_replace('%%FILTER_ENDTIME:'.$output[1].'%%', $replace, $finalelements);
+            $finalelements = str_replace('%%ENDTIME%%', $filterendtime, $finalelements);
         }
-
-        $finalelements = str_replace('%STARTTIME%%', $filterstarttime, $finalelements);
-        $finalelements = str_replace('%ENDTIME%%', $filterendtime, $finalelements);
-
         return $finalelements;
     }
 
     public function print_filter(&$mform) {
         global $DB, $CFG;
-        $mform->addElement('date_time_selector', 'filter_starttime', get_string('starttime', 'block_configurable_reports'));
+        $mform->addElement('date_time_selector', 'filter_starttime', get_string('starttime', 'block_configurable_reports'),array('optional' => true));
         $mform->setDefault('filter_starttime', time() - 3600 * 24);
-        $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'));
+        $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'), array('optional' => true));
         $mform->setDefault('filter_endtime', time() + 3600 * 24);
     }
 }
