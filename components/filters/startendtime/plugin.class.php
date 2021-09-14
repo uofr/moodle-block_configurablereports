@@ -51,7 +51,8 @@ class plugin_startendtime extends plugin_base {
             $filterstarttime = optional_param_array('filter_starttime', 0, PARAM_RAW);
             $filterendtime = optional_param_array('filter_endtime', 0, PARAM_RAW);
         }
-
+        //UR HACK: THIS SECTION CHANGED TO INCLUDE ENABLE/DISABLE OPTION
+        //FOR DATE TIME FILTER
        // if (!$filterstarttime || !$filterendtime) {
            // return $finalelements;
         //}
@@ -97,4 +98,5 @@ class plugin_startendtime extends plugin_base {
         $mform->addElement('date_time_selector', 'filter_endtime', get_string('endtime', 'block_configurable_reports'), array('optional' => true));
         $mform->setDefault('filter_endtime', time() + 3600 * 24);
     }
+    //END OF HACK
 }
