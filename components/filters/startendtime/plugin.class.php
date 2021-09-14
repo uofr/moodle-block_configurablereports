@@ -1,11 +1,3 @@
-       // if (!$filterstarttime || !$filterendtime) {
-           // return $finalelements;
-        //}
-
-        $operators = array('<', '>', '<=', '>=');
-        if($filterstarttime !=0){
-
-            $filterstarttime = make_timestamp($filterstarttime['year'], $filterstarttime['month'], $filterstarttime['day'],
 <?php
 // This file is part of Moodle - http://moodle.org/
 //
@@ -84,29 +76,6 @@ class plugin_startendtime extends plugin_base {
         if($filterendtime !=0){
             $filterendtime = make_timestamp($filterendtime['year'], $filterendtime['month'], $filterendtime['day'],
             $filterendtime['hour'], $filterendtime['minute']);
-
-        $operators = array('<', '>', '<=', '>=');
-
-        if (preg_match("/%%FILTER_STARTTIME:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
-            if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
-            }
-            $replace = ' AND '.$field.' '.$operator.' '.$filterstarttime;
-            $finalelements = str_replace('%%FILTER_STARTTIME:'.$output[1].'%%', $replace, $finalelements);
-        }
-
-        if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
-            list($field, $operator) = preg_split('/:/', $output[1]);
-            if (!in_array($operator, $operators)) {
-                print_error('nosuchoperator');
-            }
-            $replace = ' AND '.$field.' '.$operator.' '.$filterendtime;
-            $finalelements = str_replace('%%FILTER_ENDTIME:'.$output[1].'%%', $replace, $finalelements);
-        }
-
-        $finalelements = str_replace('%%STARTTIME%%', $filterstarttime, $finalelements);
-        $finalelements = str_replace('%%ENDTIME%%', $filterendtime, $finalelements);
 
             if (preg_match("/%%FILTER_ENDTIME:([^%]+)%%/i", $finalelements, $output)) {
                 list($field, $operator) = preg_split('/:/', $output[1]);
